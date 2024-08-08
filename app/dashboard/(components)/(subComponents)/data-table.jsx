@@ -43,15 +43,18 @@ export function DataTable({
             sorting,
             columnFilters,
         },
+        meta: {
+            businessData: selectedBusiness
+        }
     })
     return (
 
         <div>
             <div className="rounded-md border">
-                <Table className="border border-red-400 w-full">
+                <Table >
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
+                            <TableRow key={headerGroup.id} >
                                 {headerGroup.headers.map((header) => {
                                     return (
                                         <TableHead key={header.id}>

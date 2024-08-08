@@ -26,7 +26,15 @@ export const columns = [
     header: "Invoice #",
   },
   {
-    accessorKey: "customer_details.email",
+    accessorKey: "created_date",
+    header: "Created Date",
+    cell: ({ row }) => {
+      const date = new Date(row.original.created_date*1000)
+      return <div className="text-right font-medium">{date.toLocaleDateString()}</div>
+    }
+  },
+  {
+    accessorKey: "email",
     header: "Email"
   },
   {
@@ -56,10 +64,10 @@ export const columns = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const invoiceDetail = row.original
       return (
-       <InvoiceModal invoiceDetail={invoiceDetail} />
+       <InvoiceModal invoiceDetail={invoiceDetail} businessDetail={table.options.meta.businessData} />
       )
     },
   },

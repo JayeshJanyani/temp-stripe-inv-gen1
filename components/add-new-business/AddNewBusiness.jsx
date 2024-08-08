@@ -54,7 +54,7 @@ function AddNewBusiness({handleSubmit}) {
             </div>
             <DialogFooter>
                 <DialogClose>
-                    <Button type="submit" className="bg-[#A17DF7] hover:bg-[#A17DF7]/80 text-white from-neutral-700"
+                    <Button type="submit" className="bg-emerald hover:bg-[#A17DF7]/80 text-white from-neutral-700"
                     onClick={()=>handleSubmit(api, businessName, businessAddress)}>Save changes</Button>
                 </DialogClose>
             </DialogFooter>

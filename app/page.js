@@ -1,6 +1,6 @@
-"use client"
 
-import { useState } from "react";
+
+// import { useState } from "react";
 import { addAPIKey } from "../utils/actions/databaseAction";
 import { signOut } from "../utils/actions/authAction";
 import HeaderNavBar from '@/components/navbar/HeaderNavBar';
@@ -9,8 +9,8 @@ import HeroBackground from '@/components/heroBackground/HeroBackground'
 import HeroPattern from '@/utils/backgroundPatterns/HeroPattern'
 import SchedulePattern from '@/utils/backgroundPatterns/SchedulePattern'
 export default function Home() {
-  const [api, setApi] = useState("");
-  const [businessName, setBusinessName] = useState("");
+  // const [api, setApi] = useState("");
+  // const [businessName, setBusinessName] = useState("");
 
   return (
     <>

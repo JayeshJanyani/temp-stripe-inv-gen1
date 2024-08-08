@@ -3,6 +3,7 @@ import { getCharges } from '@/utils/actions/stripeAction';
 import HeroBackground from '@/components/heroBackground/HeroBackground'
 import Hero from '@/components/hero/Hero'
 
+
 // import { useState, useEffect } from 'react';
 
 import { stripe } from 'stripe'
@@ -11,7 +12,8 @@ import SearchByEmail from './(components)/search-by-email';
 // }
 const getChargesByEmail = async (email, businessData) => {
   "use server"
-  //   console.log("getChargesByEmail")
+  // console.log("getChargesByEmail", email, businessData)
+  // const charges = ;
   return await getCharges(email, businessData);
 }
 

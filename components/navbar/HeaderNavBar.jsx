@@ -1,8 +1,19 @@
 import React from 'react'
 // import AddNewBusiness from './(subComponents)/add-new-business'
-import {ModeToggle} from '@/components/theme/ThemeSwitcher'
-
+import { ModeToggle } from '@/components/theme/ThemeSwitcher'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { AddNewBusiness } from '@/components/add-new-business/AddNewBusiness'
 function HeaderNavBar() {
+
+
+  const handleSubmit = async (api, businessName, businessAddress) => {
+    console.log("Submitted")
+    const response = await addAPIKey(api, businessName, businessAddress);
+    if (!response.success) {
+      throw new Error(response.error);
+    }
+  }
   return (
     <header className="fixed top-0 left-auto w-full mt-4 z-50 ">
       <div className="container md:px-20 lg:px-52 w-full ">
@@ -13,9 +24,8 @@ function HeaderNavBar() {
               Invoice Generator
             </h2>
           </div>
-
           <div className="flex items-center gap-2">
-          <ModeToggle />
+            <ModeToggle />
             {/* <AddNewBusiness /> */}
             {/* <SignOutButton /> */}
           </div>
