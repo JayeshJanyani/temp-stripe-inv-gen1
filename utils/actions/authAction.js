@@ -3,12 +3,12 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '../supabase/server'
+import { createSupabaseServerClient } from '../supabase/server'
 import { getSupabaseBrowserClient } from '../supabase/client'
 import { cookies } from 'next/headers'
 
 export async function login(formData) {
-  const supabase = createClient()
+  const supabase = createSupabaseServerClient()
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
@@ -27,7 +27,7 @@ export async function login(formData) {
 }
 
 export async function signup(formData) {
-  const supabase = createClient()
+  const supabase = createSupabaseServerClient()
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
@@ -58,7 +58,7 @@ export async function signOut() {
 }
 
 export async function loginWithGoogle(){
-  const supabase = createClient()
+  const supabase = createSupabaseServerClient()
   await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
