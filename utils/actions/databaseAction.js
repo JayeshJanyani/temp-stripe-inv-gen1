@@ -1,19 +1,21 @@
 "use server"
 
-import { createClient } from "@/utils/supabase/server";
+import createSupabaseServerClient from "@/utils/supabase/server";
 import { v4 as uuidv4 } from 'uuid';
 import { redirect } from "next/navigation";
+import {getUser} from "@/utils/supabase/getUser"
 
 
 
 export async function addAPIKey(api, businessName, businessAddress) {
+    console
     if(!api || !businessName || !businessAddress){
         return { success: false, error: "All fields are required" };
     }
 
-    const supabase = createClient()
-
+    const supabase = await createSupabaseServerClient()
     const user = await supabase.auth.getUser();
+    console.log("user",user)
     
     const { data, error } = await supabase.from("userdetails").insert({
         id: uuidv4(),
@@ -35,8 +37,7 @@ export async function addAPIKey(api, businessName, businessAddress) {
 
 export async function getAPIKey() {
     
-    const supabase = createClient()
-
+    const supabase = await createSupabaseServerClient();
     const user = await supabase.auth.getUser();
     console.log(user.data.user.id)
     const { data, error } = await supabase.from("userdetails").select("api_key, business_name, business_address").eq("user_id", user.data.user.id);

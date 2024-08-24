@@ -18,8 +18,13 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { InvoiceTableList } from "./invoice-table-list"
 import generatePdf from "@/utils/pdfAction/GeneratePDFAction"
+import { Resend } from 'resend';
+import { sendInvoiceEmail } from "@/utils/resend/sendEmail"
 
 export function InvoiceModal({ invoiceDetail, businessDetail }) {
+
+    
+
     const { register, handleSubmit, control, formState: { errors }, setValue } = useForm({
         defaultValues: {
             ...invoiceDetail,
@@ -31,8 +36,7 @@ export function InvoiceModal({ invoiceDetail, businessDetail }) {
 
     const onSubmit = (data) => {
         console.log('handlesubmit called',data);
-        generatePdf(data)
-        // Handle form submission here
+        generatePdf(data, true)
     };
 
     const handleAmount = (amount, currency) => {
@@ -67,9 +71,29 @@ ${gst ? 'GST: ' + gst : ''}`.trim()
         return `${business_name} \n${business_address}`
     }
 
-    const sendEmail = () => {
-        console.log('sendEmail called');
+    const sendEmail = async (data) => {
+        console.log('sendEmail called',data);
+        const doc = await generatePdf(invoiceDetail)
+        const pdfBuffer = Buffer.from(pdfBuffer).toString('base64');
+        const res = await fetch('/api/send', {
+            method: 'POST',
+            body: JSON.stringify({
+                to: 'janyanijayesh4@gmail.com',
+                subject: 'hello world',
+                fileData: pdfBuffer
+            })
+        });
+        console.log('res',res);
     }
+
+    const sendTempEmail = async (data) => {
+        console.log('sendTempEmail called',data);
+        const doc = await generatePdf(invoiceDetail)
+        const pdfBuffer = Buffer.from(doc, 'base64');
+        await sendInvoiceEmail(pdfBuffer);
+    }   
+
+
 
 
     return (
@@ -99,7 +123,7 @@ ${gst ? 'GST: ' + gst : ''}`.trim()
                                     <path d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12Z" stroke="currentColor" stroke-width="1.5" />
                                 </svg>
                                 Download Invoice</Button>
-                            <Button className="bg-emerald hover:bg-emerald/80 text-white text-md px-5 flex items-center gap-2" onClick={()=>sendEmail()}>
+                            <Button type="button" onClick={()=>sendEmail()} className="bg-emerald hover:bg-emerald/80 text-white text-md px-5 flex items-center gap-2">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M20.7639 12H10.0556M3 8.00003H5.5M4 12H5.5M4.5 16H5.5M9.96153 12.4896L9.07002 15.4486C8.73252 16.5688 8.56376 17.1289 8.70734 17.4633C8.83199 17.7537 9.08656 17.9681 9.39391 18.0415C9.74792 18.1261 10.2711 17.8645 11.3175 17.3413L19.1378 13.4311C20.059 12.9705 20.5197 12.7402 20.6675 12.4285C20.7961 12.1573 20.7961 11.8427 20.6675 11.5715C20.5197 11.2598 20.059 11.0295 19.1378 10.5689L11.3068 6.65342C10.2633 6.13168 9.74156 5.87081 9.38789 5.95502C9.0808 6.02815 8.82627 6.24198 8.70128 6.53184C8.55731 6.86569 8.72427 7.42461 9.05819 8.54246L9.96261 11.5701C10.0137 11.7411 10.0392 11.8266 10.0493 11.9137C10.0583 11.991 10.0582 12.069 10.049 12.1463C10.0387 12.2334 10.013 12.3188 9.96153 12.4896Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>

@@ -2,7 +2,7 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable';
 import { formatCurrency } from '../formatting/currencyFormatter';
 
-const generatePdf = async (invoiceData) => {
+const generatePdf = async (invoiceData, save) => {
     const doc = new jsPDF({format: 'a4', orientation: 'portrait', unit: 'cm'});
     console.log("generatePdf called", invoiceData)
 
@@ -261,8 +261,12 @@ const generatePdf = async (invoiceData) => {
             fontSize: 8,
         }
     })
-
-    return doc.save(`invoice_${invoiceData.invoiceNumber}.pdf`);
+    if(save){
+        return doc.save(`invoice_${invoiceData.invoiceNumber}.pdf`);
+    }
+    else {  
+        return doc.output('arraybuffer')
+    }
 }
 
 export default generatePdf;

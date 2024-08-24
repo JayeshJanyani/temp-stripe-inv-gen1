@@ -1,11 +1,13 @@
 import React from 'react'
-// import AddNewBusiness from './(subComponents)/add-new-business'
 import { ModeToggle } from '@/components/theme/ThemeSwitcher'
+import {UserDropdown} from '@/components/navbar/UserDropdown'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { AddNewBusiness } from '@/components/add-new-business/AddNewBusiness'
-function HeaderNavBar() {
-
+import { getUser } from '@/utils/supabase/getUser'
+import { LoginModal } from '@/components/login/Login'
+async function HeaderNavBar() {
+  const {data: {user}} = await getUser()
 
   const handleSubmit = async (api, businessName, businessAddress) => {
     console.log("Submitted")
@@ -19,15 +21,15 @@ function HeaderNavBar() {
       <div className="container md:px-20 lg:px-52 w-full ">
         <div className="flex justify-between items-center px-4 py-3 w-full bg-white/40 dark:bg-black/40 backdrop-filter backdrop-blur-lg rounded-full border shadow-sm">
           <div className="flex items-center gap-1 pl-4">
-            {/* <FileSpreadsheet className="text-emerald h-6 w-6" /> */}
             <h2 className="scroll-m-20 text-md font-bold tracking-tight text-center">
               Invoice Generator
             </h2>
           </div>
           <div className="flex items-center gap-2">
             <ModeToggle />
-            {/* <AddNewBusiness /> */}
-            {/* <SignOutButton /> */}
+            <div className="flex items-center gap-2">
+            {user ? <UserDropdown user={user}/> : <LoginModal/>}
+            </div>
           </div>
         </div>
       </div>

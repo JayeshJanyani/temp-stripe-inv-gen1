@@ -34,7 +34,7 @@ export const columns = [
     }
   },
   {
-    accessorKey: "email",
+    accessorKey: "customer_details.email",
     header: "Email"
   },
   {
@@ -46,7 +46,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Amount
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
         </Button>
       )
     },

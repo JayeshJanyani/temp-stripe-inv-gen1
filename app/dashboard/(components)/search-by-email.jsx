@@ -38,7 +38,7 @@ function SearchByEmail({ businessDataList, searchCheckoutByEmail }) {
   const handleSubmit = async (api, businessName, businessAddress) => {
     console.log("Submitted")
     const response = await addAPIKey(api, businessName, businessAddress);
-    if (!response.success) {
+    if (!response?.success) {
       throw new Error(response.error);
     }
   }

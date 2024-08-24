@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '../supabase/server'
-import { createClient as createClientBrowser} from '../supabase/client'
+import { getSupabaseBrowserClient } from '../supabase/client'
 import { cookies } from 'next/headers'
 
 export async function login(formData) {
@@ -48,13 +48,13 @@ export async function signup(formData) {
 }
 
 export async function signOut() {
-  const supabase = createClient()
+  const supabase = await getSupabaseBrowserClient()
     const { error } = await supabase.auth.signOut()
     if (error) {
-        redirect('/error')
+      return { success: false, message: error.message || 'Error signing out' };
     }
-    revalidatePath('/', 'layout')
     redirect('/')
+    return { success: true, message: 'Signed out successfully' };
 }
 
 export async function loginWithGoogle(){

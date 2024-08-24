@@ -1,10 +1,17 @@
 'use client'
 
-import { createBrowserClient } from '@supabase/ssr'
+import React, { useMemo } from 'react';
+import { createBrowserClient } from '@supabase/ssr';
 
-export function createClient() {
+export function getSupabaseBrowserClient() {
   return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  )
+  );
 }
+
+// function useSupabaseClient() {
+//   return useMemo(getSupabaseBrowserClient, []);
+// }
+
+// export default useSupabaseClient;
