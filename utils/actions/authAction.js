@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '../supabase/server'
+import { createClient as createClientBrowser} from '../supabase/client'
 import { cookies } from 'next/headers'
 
 export async function login(formData) {
@@ -54,4 +55,14 @@ export async function signOut() {
     }
     revalidatePath('/', 'layout')
     redirect('/')
+}
+
+export async function loginWithGoogle(){
+  const supabase = createClient()
+  await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `localhost:3000/auth/callback`,
+    },
+  });
 }

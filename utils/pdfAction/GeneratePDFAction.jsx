@@ -2,9 +2,9 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable';
 import { formatCurrency } from '../formatting/currencyFormatter';
 
-const generatePdf = async (invoiceDetail, businessDetail) => {
-    const doc = new jsPDF();
-    console.log("generatePdf called", invoiceDetail, businessDetail)
+const generatePdf = async (invoiceData) => {
+    const doc = new jsPDF({format: 'a4', orientation: 'portrait', unit: 'cm'});
+    console.log("generatePdf called", invoiceData)
 
     const getItemsarray = (items, currency) => {
         return items.reduce((acc, item) => {
@@ -13,74 +13,73 @@ const generatePdf = async (invoiceDetail, businessDetail) => {
         }, []);
     };
 
-    // autoTable(doc, {
-    //     body: [
-    //         [
-    //             {
-    //                 content: `${formData?.companyName}`,
-    //                 styles: {
-    //                     halign: 'left',
-    //                     fontSize: 20,
-    //                     // textColor: '#ffffff'
-    //                 }
-    //             },
-    //             {
-    //                 content: `Invoice # ${formData?.invoiceNo}`,
-    //                 styles: {
-    //                     halign: 'right',
-    //                     fontSize: 20,
-    //                     // textColor: '#ffffff'
-    //                 }
-    //             }
-    //         ],
-    //     ],
-    //     theme: 'plain',
-    //     // styles: {
-    //     //     fillColor: '#3366ff'
-    //     // }
-    // });
+    autoTable(doc, {
+        body: [
+            [
+                {
+                    content: "Invoice",
+                    styles: {
+                        halign: 'center',
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                        textcolor: '#242424',
+                    },
+                },
+            ],
+        ],
+        styles: {
+            font: 'Arial',
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontSize: 12,
+        }
+    });
 
+    autoTable(doc, {
+        body: [
+            [
+                {
+                    content: `${invoiceData?.billFrom}`,
+                    styles: {
+                        halign: 'left',
+                    },
+                },
+                {
+                    content: `Invoice #:   ${invoiceData?.invoiceNumber} \n Date:   ${invoiceData?.invoiceDate}`,
+                    styles: {
+                        halign: 'right'
+                    },
+                }
+            ],
+        ],
+        theme: 'plain',
+        styles: {
+            font: 'Arial',
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontSize: 12,
+        }
+    });
 
-    //     autoTable(doc, {
-    //         body: [
-    //             [
-    //                 {
-    //                     content: `From: \n${formData.billFrom}`,
-    //                     styles: {
-    //                         halign: 'left'
-    //                     }
-    //                 },
-    //                 {
-    //                     content: `Purchase Order #: ${formData.purchaseOrder},
-    //                          \nDate: ${formData.date}`,
-    //                     styles: {
-    //                         halign: 'right'
-    //                     }
-    //                 }
-    //             ],
-    //         ],
-    //         theme: 'plain'
-    //     });
-
-    // autoTable(doc, {
-    //     body: [
-    //         [
-    //             {
-    //                 content: `Billing Address: \n${formData.billTo}`,
-    //                 styles: {
-    //                     halign: 'left'
-    //                 }
-    //             },
-    //             {
-    //                 content: `Shipping Address: \n${formData.shipTo}`,
-    //                 styles: {
-    //                     halign: 'left'
-    //                 }
-    //             }
-    //         ],
-    //     ],
-    //     theme: 'plain'
-    // });
+    autoTable(doc, {
+        body: [
+            [
+                {
+                    content: `Bill To: \n \n${invoiceData?.billTo}`,
+                    styles: {
+                        halign: 'left',
+                    },
+                }
+            ],
+        ],
+        theme: 'plain',
+        styles: {
+            font: 'Arial',
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontSize: 12,
+        }
+    });
 
     // autoTable(doc, {
     //     body: [
@@ -124,157 +123,146 @@ const generatePdf = async (invoiceDetail, businessDetail) => {
 
     autoTable(doc, {
         head: [['Description', 'Quantity', 'Price', 'Discount', 'Amount']],
-        body: getItemsarray(invoiceDetail.line_items.data, invoiceDetail.currency),
+        body: getItemsarray(invoiceData.line_items.data, invoiceData.currency),
         theme: 'striped',
         headStyles: {
-            fillColor: ''
+            fillColor: '#a5a1a1'
+        },
+        styles: {
+            font: 'Arial',
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontSize: 12,
         }
     });
 
-    // autoTable(doc, {
-    //     body: [
-    //         [
-    //             {
-    //                 content: 'Subtotal:',
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //             {
-    //                 content: `$ ${subTotalAmount}`,
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //         ],
-    //         [
-    //             {
-    //                 content: 'Total tax:',
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //             {
-    //                 content: `$ ${discountTaxShipping?.tax}`,
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //         ],
-    //         [
-    //             {
-    //                 content: 'Shipping:',
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //             {
-    //                 content: `$ ${discountTaxShipping?.shipping}`,
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //         ],
-    //         [
-    //             {
-    //                 content: 'Discount:',
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //             {
-    //                 content: `$ ${discountTaxShipping?.discount}`,
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //         ],
-    //         [
-    //             {
-    //                 content: 'Total amount:',
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //             {
-    //                 content: `$ ${totalAmount}`,
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //         ],
-    //         [
-    //             {
-    //                 content: 'Advance:',
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //             {
-    //                 content: `$ ${formData?.amtPaid}`,
-    //                 styles: {
-    //                     halign: 'right'
-    //                 }
-    //             },
-    //         ],
-    //     ],
-    //     theme: 'plain'
-    // });
+    autoTable(doc, {
+        body: [
+            [
+                {
+                    content: `SubTotal : ${formatCurrency(invoiceData.amount_subtotal, invoiceData.currency)}`,
+                    styles: {
+                        halign: 'right'
+                    },
+                }
+            ],
+        ],
+        theme: 'plain',
+        styles: {
+            font: 'Arial',
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontSize: 12,
+        }
+    });
 
-    // if (formData?.tnC) {
-    //     autoTable(doc, {
-    //         body: [
-    //             [
-    //                 {
-    //                     content: 'Terms & Conditions',
-    //                     styles: {
-    //                         halign: 'left',
-    //                         fontSize: 14
-    //                     }
-    //                 }
-    //             ],
-    //             [
-    //                 {
-    //                     content: `${formData?.tnC}`,
-    //                     styles: {
-    //                         halign: 'left'
-    //                     }
-    //                 }
-    //             ],
-    //         ],
-    //         theme: "plain"
-    //     });
-    // }
+    if (invoiceData?.total_details?.amount_discount > 0) {
+        autoTable(doc, {
+            body: [
+                [
+                    {
+                        content: `Discount : ${formatCurrency(invoiceData.total_details.amount_discount, invoiceData.currency)}`,
+                        styles: {
+                            halign: 'right'
+                        },
+                    }
+                ],
+            ],
+            theme: 'plain',
+            styles: {
+                font: 'Arial',
+                fontStyle: 'normal',
+                fontWeight: 'normal',
+                fontSize: 12,
+            }
+        })
+    }
 
-    // if (formData?.notes) {
-    //     autoTable(doc, {
-    //         body: [
-    //             [
-    //                 {
-    //                     content: 'Notes',
-    //                     styles: {
-    //                         halign: 'left',
-    //                         fontSize: 14
-    //                     }
-    //                 }
-    //             ],
-    //             [
-    //                 {
-    //                     content: `${formData?.notes}`,
-    //                     styles: {
-    //                         halign: 'left'
-    //                     }
-    //                 }
-    //             ],
-    //         ],
-    //         theme: "plain"
-    //     });
-    // }
+    if (invoiceData?.total_details?.amount_shipping > 0) {
+        autoTable(doc, {
+            body: [
+                [
+                    {
+                        content: `Shipping : ${formatCurrency(invoiceData.total_details.amount_shipping, invoiceData.currency)}`,
+                        styles: {
+                            halign: 'right'
+                        },
+                    }
+                ],
+            ],
+            theme: 'plain',
+            styles: {
+                font: 'Arial',
+                fontStyle: 'normal',
+                fontWeight: 'normal',
+                fontSize: 12,
+            }
+        })
+    }
 
-    // if (viewInvoiceFlag) {
-        return doc.output('pdfobjectnewwindow');
-    // }
-    // return doc.save("invoice");
+    if (invoiceData?.total_details?.amount_tax > 0) {
+        autoTable(doc, {
+            body: [
+                [
+                    {
+                        content: `Shipping : ${formatCurrency(invoiceData.total_details.amount_tax, invoiceData.currency)}`,
+                        styles: {
+                            halign: 'right'
+                        },
+                    }
+                ],
+            ],
+            theme: 'plain',
+            styles: {
+                font: 'Arial',
+                fontStyle: 'normal',
+                fontWeight: 'normal',
+                fontSize: 12,
+            }
+        })
+    }
+    
+
+    autoTable(doc, {
+        body: [
+            [
+                {
+                    content: `Total Amount: ${formatCurrency(invoiceData.amount_total, invoiceData.currency)}`,
+                    styles: {
+                        halign: 'right'
+                    },
+                }
+            ],
+        ],
+        styles: {
+            font: 'Arial',
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontSize: 12,
+        }
+    });
+
+    autoTable(doc, {
+        body: [
+            [
+                {
+                    content: `This invoice is system generated using the data provided by the customer.`,
+                    styles: {
+                        halign: 'center',
+                        valign: 'bottom'
+                    },
+                }
+            ],
+        ],
+        styles: {
+            font: 'Arial',
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontSize: 8,
+        }
+    })
+
+    return doc.save(`invoice_${invoiceData.invoiceNumber}.pdf`);
 }
 
 export default generatePdf;
